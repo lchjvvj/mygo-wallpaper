@@ -31,6 +31,9 @@ GOOS=linux GOARCH=amd64 go build -o wallpaper
 # 信创arm64（麒麟arm）
 GOOS=linux GOARCH=arm64 go build -o wallpaper-arm64
 
+# 构建deb包
+dpkg-buildpackage -us -uc -b
+
 
 #### 参与贡献
 
