@@ -16,7 +16,7 @@ Architecture: amd64 arm64
 Depends:
  ${shlibs:Depends},
  ${misc:Depends},
- dde-control-center | gnome-settings-daemon
+ libglib2.0-bin
 Description: MyGO cross platform wallpaper tool
  Wallpaper GUI app powered by mygo(govcl).
  Support Bing public API, private wallpaper API, MTphotos API.
