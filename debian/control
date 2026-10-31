@@ -4,9 +4,6 @@ Priority: optional
 Maintainer: gfc <ffgcc45@qq.com>
 Build-Depends:
  debhelper-compat (= 13),
- golang (>=1.27.3),
- golang-github-ying32-govcl-dev,
- liblcl-dev,
 Standards-Version: 4.6.2
 Homepage: https://gitee.com/GXDE-OS/mygo-wallpaper
 Rules-Requires-Root: no

@@ -1,13 +1,13 @@
 #!/usr/bin/make -f
 
-export DH_GOLANG_GO_MODULE=1
 export GO111MODULE=on
 
 %:
 	dh $@
 
 override_dh_auto_build:
-	dh_auto_build -- go build -o mygo-wallpaper ./
+	go build -o mygo-wallpaper ./
+
+override_dh_dwz:
 
 override_dh_auto_install:
-	dh_auto_install
