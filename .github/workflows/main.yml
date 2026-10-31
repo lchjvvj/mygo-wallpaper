@@ -1,0 +1,100 @@
+name: build-deb
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+  workflow_dispatch:
+
+env:
+  DEB_BUILD_OPTIONS: "parallel=4"
+  PACKAGE_NAME: mygo-wallpaper
+
+jobs:
+  build_deb_amd64:
+    runs-on: ubuntu-latest
+    container: debian:trixie
+    steps:
+      - name: Install build dependencies
+        run: |
+          apt update -y
+          apt install -y --no-install-recommends \
+            debhelper-compat \
+            dpkg-dev \
+            devscripts \
+            lintian \
+            golang \
+            liblcl-dev \
+            git \
+            ca-certificates
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Build deb package
+        run: |
+          go version
+          go mod tidy
+          dpkg-buildpackage -us -uc -b
+      - name: Collect artifacts
+        run: |
+          mkdir -p dist
+          cp ../${PACKAGE_NAME}_*.deb ../${PACKAGE_NAME}_*.buildinfo ../${PACKAGE_NAME}_*.changes dist/
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: deb-amd64
+          path: dist/
+          retention-days: 7
+
+  build_deb_arm64:
+    runs-on: ubuntu-24.04-arm
+    container: debian:trixie
+    steps:
+      - name: Install build dependencies
+        run: |
+          apt update -y
+          apt install -y --no-install-recommends \
+            debhelper-compat \
+            dpkg-dev \
+            devscripts \
+            lintian \
+            golang \
+            liblcl-dev \
+            git \
+            ca-certificates
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Build deb package
+        run: |
+          go version
+          go mod tidy
+          dpkg-buildpackage -us -uc -b
+      - name: Collect artifacts
+        run: |
+          mkdir -p dist
+          cp ../${PACKAGE_NAME}_*.deb ../${PACKAGE_NAME}_*.buildinfo ../${PACKAGE_NAME}_*.changes dist/
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: deb-arm64
+          path: dist/
+          retention-days: 7
+
+  archive:
+    runs-on: ubuntu-latest
+    needs:
+      - build_deb_amd64
+      - build_deb_arm64
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: out
+      - name: Archive
+        run: |
+          zip -r ${PACKAGE_NAME}-ci-artifacts.zip out/
+      - name: Upload archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-artifacts
+          path: ${{ env.PACKAGE_NAME }}-ci-artifacts.zip
+          retention-days: 30
