@@ -1,0 +1,88 @@
+# .gitlab-ci.yml
+variables:
+  DEB_BUILD_OPTIONS: "parallel=4"
+  DISTRO: debian:trixie
+  PACKAGE_NAME: mygo-wallpaper
+
+stages:
+  - build_deb_amd64
+  - build_deb_arm64
+  - archive
+
+build_deb_amd64:
+  stage: build_deb_amd64
+  image: ${DISTRO}
+  before_script:
+    - apt update -y
+    - apt install -y --no-install-recommends
+        debhelper-compat
+        dpkg-dev
+        devscripts
+        lintian
+        golang
+        liblcl-dev
+        git
+        ca-certificates
+  script:
+    - mkdir -p build-amd64
+    - cp -r ./* build-amd64/
+    - cd build-amd64
+    - # 校验golang版本 >=1.27.3
+    - go version
+    - go mod tidy
+    - dpkg-buildpackage -us -uc -b
+  artifacts:
+    paths:
+      - ../${PACKAGE_NAME}_*.deb
+      - ../${PACKAGE_NAME}_*.buildinfo
+      - ../${PACKAGE_NAME}_*.changes
+    expire_in: 7d
+  tags:
+    - amd64
+
+build_deb_arm64:
+  stage: build_deb_arm64
+  image: ${DISTRO}
+  before_script:
+    - apt update -y
+    - apt install -y --no-install-recommends
+        debhelper-compat
+        dpkg-dev
+        devscripts
+        lintian
+        golang
+        liblcl-dev
+        git
+        ca-certificates
+        qemu-user-static
+  script:
+    - mkdir -p build-arm64
+    - cp -r ./* build-arm64/
+    - cd build-arm64
+    - go version
+    - go mod tidy
+    - dpkg-buildpackage -us -uc -b
+  artifacts:
+    paths:
+      - ../${PACKAGE_NAME}_*.deb
+      - ../${PACKAGE_NAME}_*.buildinfo
+      - ../${PACKAGE_NAME}_*.changes
+    expire_in: 7d
+  tags:
+    - arm64
+
+archive:
+  stage: archive
+  image: alpine:latest
+  needs:
+    - build_deb_amd64
+    - build_deb_arm64
+  script:
+    - apk add zip
+    - mkdir -p out
+    - cp ${PACKAGE_NAME}_*.deb out/
+    - zip -r ${PACKAGE_NAME}-ci-artifacts.zip out/
+  artifacts:
+    paths:
+      - ${PACKAGE_NAME}-ci-artifacts.zip
+    expire_in: 30d
