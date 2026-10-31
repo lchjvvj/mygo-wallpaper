@@ -160,8 +160,12 @@ func setWallpaper(path string) error {
 		cmd2 := exec.Command("Rundll32.exe", "user32.dll,UpdatePerUserSystemParameters")
 		_ = cmd2.Start()
 	case "linux":
-		// GXDE / Deepin DDE 优先
-		_ = exec.Command("dde-control-center", "-s", "wallpaper", path).Start()
+		// GXDE / Deepin DDE 优先：通过gsettings写入deepin兼容schema，由dde-daemon生效
+		absPath, absErr := filepath.Abs(path)
+		if absErr != nil {
+			absPath = path
+		}
+		_ = exec.Command("gsettings", "set", "com.deepin.wrap.gnome.desktop.background", "picture-uri", "file://"+absPath).Start()
 		// 兼容gnome fallback
 		_ = exec.Command("dbus-send", "--print-reply", "--dest=org.gnome.SettingsDaemon", "/org/gnome/SettingsDaemon", "org.gnome.SettingsDaemon.Plugs.SetWallpaper", "string:"+path).Start()
 	}
