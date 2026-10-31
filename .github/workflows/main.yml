@@ -9,6 +9,7 @@ on:
 env:
   DEB_BUILD_OPTIONS: "parallel=4"
   PACKAGE_NAME: mygo-wallpaper
+  GO_VERSION: "1.27.3"
 
 jobs:
   build_deb_amd64:
@@ -20,13 +21,21 @@ jobs:
           apt update -y
           apt install -y --no-install-recommends \
             debhelper-compat \
+            build-essential \
             dpkg-dev \
             devscripts \
             lintian \
-            golang \
-            liblcl-dev \
+            curl \
             git \
             ca-certificates
+      - name: Install Go toolchain
+        run: |
+          arch="$(dpkg --print-architecture)"
+          curl -fsSL "https://dl.google.com/go/go${GO_VERSION}.linux-${arch}.tar.gz" -o /tmp/go.tar.gz
+          rm -rf /usr/local/go
+          tar -C /usr/local -xzf /tmp/go.tar.gz
+          rm -f /tmp/go.tar.gz
+          echo "/usr/local/go/bin" >> "$GITHUB_PATH"
       - name: Checkout
         uses: actions/checkout@v4
       - name: Build deb package
@@ -54,13 +63,21 @@ jobs:
           apt update -y
           apt install -y --no-install-recommends \
             debhelper-compat \
+            build-essential \
             dpkg-dev \
             devscripts \
             lintian \
-            golang \
-            liblcl-dev \
+            curl \
             git \
             ca-certificates
+      - name: Install Go toolchain
+        run: |
+          arch="$(dpkg --print-architecture)"
+          curl -fsSL "https://dl.google.com/go/go${GO_VERSION}.linux-${arch}.tar.gz" -o /tmp/go.tar.gz
+          rm -rf /usr/local/go
+          tar -C /usr/local -xzf /tmp/go.tar.gz
+          rm -f /tmp/go.tar.gz
+          echo "/usr/local/go/bin" >> "$GITHUB_PATH"
       - name: Checkout
         uses: actions/checkout@v4
       - name: Build deb package
