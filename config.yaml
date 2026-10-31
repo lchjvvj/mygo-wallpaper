@@ -1,0 +1,29 @@
+# 全局设置
+auto_play: true
+interval_minute: 30
+cache_dir: "./cache"
+max_cache_num: 50
+
+# 数据源开关，true=启用
+source:
+  bing: true
+  private: true
+  mtphotos: true
+
+# 必应壁纸公开API
+bing_api:
+  url: "https://cn.bing.com/HPImageArchive.aspx?format=js&idx=0&n=8&mkt=zh-CN"
+  base: "https://cn.bing.com"
+
+# 你的私有壁纸库API
+private_api:
+  url: "https://xxx.xxx.com/api/wallpaper/random"
+  token: ""
+  method: "GET"
+
+# MTphotos官方API
+mtphotos_api:
+  url: "https://api.mtphotos.example.com/random"
+  token: ""
+
+# 系统适配：自动识别平台，无需修改
