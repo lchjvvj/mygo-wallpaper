@@ -1,0 +1,74 @@
+name: Build mygo-wallpaper deb
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  DEB_BUILD_OPTIONS: "parallel=4"
+  DISTRO: debian:trixie
+  PACKAGE_NAME: mygo-wallpaper
+
+jobs:
+  build_deb_amd64:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt update -y
+          sudo apt install -y --no-install-recommends \
+            debhelper-compat dpkg-dev devscripts lintian \
+            golang liblcl-dev git ca-certificates
+
+      - name: Build deb
+        run: |
+          go version
+          go mod tidy
+          dpkg-buildpackage -us -uc -b
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: deb-amd64
+          path: |
+            ../${{ env.PACKAGE_NAME }}_*.deb
+            ../${{ env.PACKAGE_NAME }}_*.buildinfo
+            ../${{ env.PACKAGE_NAME }}_*.changes
+          retention-days: 7
+
+  build_deb_arm64:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Build with docker arm64
+        run: |
+          docker run --rm -v $PWD:/src --platform linux/arm64 ${{ env.DISTRO }} bash -c "
+            set -e
+            cd /src
+            apt update -y
+            apt install -y --no-install-recommends debhelper-compat dpkg-dev devscripts lintian golang liblcl-dev git ca-certificates
+            go version
+            go mod tidy
+            dpkg-buildpackage -us -uc -b
+          "
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: deb-arm64
+          path: |
+            ../${{ env.PACKAGE_NAME }}_*.deb
+            ../${{ env.PACKAGE_NAME }}_*.buildinfo
+            ../${{ env.PACKAGE_NAME }}_*.changes
+          retention-days: 7
