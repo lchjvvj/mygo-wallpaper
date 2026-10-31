@@ -1,88 +1,74 @@
-# .gitlab-ci.yml
-variables:
+name: Build mygo-wallpaper deb
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
   DEB_BUILD_OPTIONS: "parallel=4"
   DISTRO: debian:trixie
   PACKAGE_NAME: mygo-wallpaper
 
-stages:
-  - build_deb_amd64
-  - build_deb_arm64
-  - archive
+jobs:
+  build_deb_amd64:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
 
-build_deb_amd64:
-  stage: build_deb_amd64
-  image: ${DISTRO}
-  before_script:
-    - apt update -y
-    - apt install -y --no-install-recommends
-        debhelper-compat
-        dpkg-dev
-        devscripts
-        lintian
-        golang
-        liblcl-dev
-        git
-        ca-certificates
-  script:
-    - mkdir -p build-amd64
-    - cp -r ./* build-amd64/
-    - cd build-amd64
-    - # 校验golang版本 >=1.27.3
-    - go version
-    - go mod tidy
-    - dpkg-buildpackage -us -uc -b
-  artifacts:
-    paths:
-      - ../${PACKAGE_NAME}_*.deb
-      - ../${PACKAGE_NAME}_*.buildinfo
-      - ../${PACKAGE_NAME}_*.changes
-    expire_in: 7d
-  tags:
-    - amd64
+      - name: Install dependencies
+        run: |
+          sudo apt update -y
+          sudo apt install -y --no-install-recommends \
+            debhelper-compat dpkg-dev devscripts lintian \
+            golang liblcl-dev git ca-certificates
 
-build_deb_arm64:
-  stage: build_deb_arm64
-  image: ${DISTRO}
-  before_script:
-    - apt update -y
-    - apt install -y --no-install-recommends
-        debhelper-compat
-        dpkg-dev
-        devscripts
-        lintian
-        golang
-        liblcl-dev
-        git
-        ca-certificates
-        qemu-user-static
-  script:
-    - mkdir -p build-arm64
-    - cp -r ./* build-arm64/
-    - cd build-arm64
-    - go version
-    - go mod tidy
-    - dpkg-buildpackage -us -uc -b
-  artifacts:
-    paths:
-      - ../${PACKAGE_NAME}_*.deb
-      - ../${PACKAGE_NAME}_*.buildinfo
-      - ../${PACKAGE_NAME}_*.changes
-    expire_in: 7d
-  tags:
-    - arm64
+      - name: Build deb
+        run: |
+          go version
+          go mod tidy
+          dpkg-buildpackage -us -uc -b
 
-archive:
-  stage: archive
-  image: alpine:latest
-  needs:
-    - build_deb_amd64
-    - build_deb_arm64
-  script:
-    - apk add zip
-    - mkdir -p out
-    - cp ${PACKAGE_NAME}_*.deb out/
-    - zip -r ${PACKAGE_NAME}-ci-artifacts.zip out/
-  artifacts:
-    paths:
-      - ${PACKAGE_NAME}-ci-artifacts.zip
-    expire_in: 30d
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: deb-amd64
+          path: |
+            ../${{ env.PACKAGE_NAME }}_*.deb
+            ../${{ env.PACKAGE_NAME }}_*.buildinfo
+            ../${{ env.PACKAGE_NAME }}_*.changes
+          retention-days: 7
+
+  build_deb_arm64:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Build with docker arm64
+        run: |
+          docker run --rm -v $PWD:/src --platform linux/arm64 ${{ env.DISTRO }} bash -c "
+            set -e
+            cd /src
+            apt update -y
+            apt install -y --no-install-recommends debhelper-compat dpkg-dev devscripts lintian golang liblcl-dev git ca-certificates
+            go version
+            go mod tidy
+            dpkg-buildpackage -us -uc -b
+          "
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: deb-arm64
+          path: |
+            ../${{ env.PACKAGE_NAME }}_*.deb
+            ../${{ env.PACKAGE_NAME }}_*.buildinfo
+            ../${{ env.PACKAGE_NAME }}_*.changes
+          retention-days: 7
