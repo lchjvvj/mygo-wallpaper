@@ -1,7 +1,7 @@
 Source: mygo-wallpaper
 Section: utils
 Priority: optional
-Maintainer: GXDE Developer <dev@gxde.top>
+Maintainer: gfc <ffgcc45@qq.com>
 Build-Depends:
  debhelper-compat (= 13),
  golang (>=1.27.3),
