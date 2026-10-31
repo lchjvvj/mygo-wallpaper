@@ -12,6 +12,7 @@
 2. 安装 mygo 框架
  
  go install github.com/therecipe/qt/cmd/...@latest
+go install github.com/ying32/govcl/vcl@latest
  
 3. 初始化依赖
  
