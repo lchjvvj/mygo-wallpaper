@@ -269,7 +269,8 @@ func main() {
 
 	mainForm := vcl.NewForm(nil)
 	mainForm.SetCaption("MyGO跨平台壁纸工具｜Bing+私有库+MTphotos")
-	mainForm.SetSize(types.Size{Width: 620, Height: 520})
+	mainForm.SetWidth(620)
+	mainForm.SetHeight(520)
 
 	// 控件
 	chkBing := vcl.NewCheckBox(mainForm)
@@ -322,12 +323,12 @@ func main() {
 	memoLog.SetReadOnly(true)
 
 	logFn := func(msg string) {
-		vcl.Synchronize(func() {
+		vcl.ThreadSync(func() {
 			memoLog.Lines().Add(time.Now().Format("[15:04:05] ") + msg)
 		})
 	}
 	previewFn := func(p string) {
-		vcl.Synchronize(func() {
+		vcl.ThreadSync(func() {
 			imgPreview.Picture().LoadFromFile(p)
 		})
 	}
@@ -352,11 +353,11 @@ func main() {
 	edtInterval.SetText(fmt.Sprintf("%d", globalCfg.IntervalMinute))
 
 	// 切换壁纸按钮
-	btnSwitch.OnClick(func(sender vcl.IObject) {
+	btnSwitch.SetOnClick(func(sender vcl.IObject) {
 		go changeOneWallpaper(logFn, previewFn)
 	})
 
-	btnStart.OnClick(func(sender vcl.IObject) {
+	btnStart.SetOnClick(func(sender vcl.IObject) {
 		globalCfg.Source.Bing = chkBing.Checked()
 		globalCfg.Source.Private = chkPrivate.Checked()
 		globalCfg.Source.MTPhotos = chkMT.Checked()
@@ -366,13 +367,13 @@ func main() {
 		startAutoPlay(logFn)
 	})
 
-	btnStop.OnClick(func(sender vcl.IObject) {
+	btnStop.SetOnClick(func(sender vcl.IObject) {
 		globalCfg.AutoPlay = false
 		_ = saveConfig(globalCfg)
 		stopAutoPlay(logFn)
 	})
 
-	mainForm.OnClose(func(sender vcl.IObject, action *types.TCloseAction) {
+	mainForm.SetOnClose(func(sender vcl.IObject, action *types.TCloseAction) {
 		stopAutoPlay(logFn)
 	})
 
