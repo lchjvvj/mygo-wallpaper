@@ -1,0 +1,24 @@
+Source: mygo-wallpaper
+Section: utils
+Priority: optional
+Maintainer: GXDE Developer <dev@gxde.top>
+Build-Depends:
+ debhelper-compat (= 13),
+ golang (>=1.27.3),
+ golang-github-ying32-govcl-dev,
+ liblcl-dev,
+Standards-Version: 4.6.2
+Homepage: https://gitee.com/GXDE-OS/mygo-wallpaper
+Rules-Requires-Root: no
+
+Package: mygo-wallpaper
+Architecture: amd64 arm64
+Depends:
+ ${shlibs:Depends},
+ ${misc:Depends},
+ dde-control-center | gnome-settings-daemon
+Description: MyGO cross platform wallpaper tool
+ Wallpaper GUI app powered by mygo(govcl).
+ Support Bing public API, private wallpaper API, MTphotos API.
+ Support GXDE/DDE, Debian, XinChuang(Kylin/UOS), Windows.
+ Features: auto wallpaper rotation, preview, log viewer.

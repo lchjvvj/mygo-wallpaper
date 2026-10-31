@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=MyGO 壁纸
+Comment=跨平台壁纸工具（必应 / MTphotos / 私有 API）
+Exec=mygo-wallpaper
+Icon=wallpaper
+Categories=Utility;DesktopSettings;
+Keywords=wallpaper;bing;
+StartupNotify=true

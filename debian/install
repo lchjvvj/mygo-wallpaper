@@ -1,0 +1,3 @@
+mygo-wallpaper usr/bin/
+config.yaml etc/mygo-wallpaper/
+debian/mygo-wallpaper.desktop usr/share/applications/
