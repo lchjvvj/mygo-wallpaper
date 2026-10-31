@@ -1,4 +1,4 @@
-mygo-wallpaper (0.1.0-1) unstable; urgency=medium
+mygo-wallpaper (0.1.0-1-1) unstable; urgency=medium
 
   * Initial package.
   * Support Bing, private wallpaper API, MTphotos API.
