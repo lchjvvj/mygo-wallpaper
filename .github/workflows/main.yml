@@ -95,7 +95,7 @@ jobs:
           name: deb-arm64
           path: dist/
           retention-days: 7
- build_deb_amd64-sid:
+  build_deb_amd64-sid:
     runs-on: ubuntu-latest
     container: debian:sid
     steps:
