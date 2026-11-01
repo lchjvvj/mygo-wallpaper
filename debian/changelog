@@ -1,8 +1,8 @@
-mygo-wallpaper (0.1.1) unstable; urgency=medium
+mygo-wallpaper (0.1.2) unstable; urgency=medium
 
   * Initial package.
   * Support Bing, private wallpaper API, MTphotos API.
-  * GUI based on mygo(govcl), support Windows/Linux/XinChuang.
+  * GUI based on mygo(govcl), support Linux/XinChuang.
   * Support DDE/GXDE wallpaper setting.
 
  -- gfc <ffgcc45@qq.com>  Tue, 31 Oct 2026 12:00:00 +0800
