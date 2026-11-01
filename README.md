@@ -1,4 +1,4 @@
-# bing-wallpaper
+# mygo-wallpaper
 
 
 #### 安装教程
@@ -24,7 +24,7 @@ go run main.go
 
 5. 打包发布（跨平台编译）
 
-# Linux / 信创amd64
+# Linux amd64
 GOOS=linux GOARCH=amd64 go build -o wallpaper
 # 信创arm64（麒麟arm）
 GOOS=linux GOARCH=arm64 go build -o wallpaper-arm64
