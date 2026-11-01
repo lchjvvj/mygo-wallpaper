@@ -5,7 +5,7 @@ Maintainer: gfc <ffgcc45@qq.com>
 Build-Depends:
  debhelper-compat (= 13),
 Standards-Version: 4.6.2
-Homepage: https://gitee.com/GXDE-OS/mygo-wallpaper
+Homepage: https://github.com/lchjvvj/mygo-wallpaper
 Rules-Requires-Root: no
 
 Package: mygo-wallpaper
@@ -17,5 +17,5 @@ Depends:
 Description: MyGO cross platform wallpaper tool
  Wallpaper GUI app powered by mygo(govcl).
  Support Bing public API, private wallpaper API, MTphotos API.
- Support GXDE/DDE, Debian, XinChuang(Kylin/UOS), Windows.
+ Support GXDE/DDE, Debian, XinChuang(Kylin/UOS).
  Features: auto wallpaper rotation, preview, log viewer.
