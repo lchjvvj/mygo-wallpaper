@@ -24,8 +24,6 @@ go run main.go
 
 5. 打包发布（跨平台编译）
 
-# Windows
-GOOS=windows GOARCH=amd64 go build -o wallpaper.exe
 # Linux / 信创amd64
 GOOS=linux GOARCH=amd64 go build -o wallpaper
 # 信创arm64（麒麟arm）
