@@ -15,12 +15,6 @@ bing_api:
   url: "https://cn.bing.com/HPImageArchive.aspx?format=js&idx=0&n=8&mkt=zh-CN"
   base: "https://cn.bing.com"
 
-# 你的私有壁纸库API
-private_api:
-  url: "https://xxx.xxx.com/api/wallpaper/random"
-  token: ""
-  method: "GET"
-
 # MTphotos官方API
 mtphotos_api:
   url: "https://api.mtphotos.example.com/random"
