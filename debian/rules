@@ -6,7 +6,8 @@ export GO111MODULE=on
 	dh $@
 
 override_dh_auto_build:
-	go build -o mygo-wallpaper ./
+	go build -buildvcs=false -o mygo-wallpaper ./
+10	10
 
 override_dh_dwz:
 
