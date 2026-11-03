@@ -10,6 +10,8 @@ env:
   DEB_BUILD_OPTIONS: "parallel=4"
   PACKAGE_NAME: mygo-wallpaper
   GO_VERSION: "1.27.3"
+  LIBLCL_AMD64_URL: "https://github.com/ying32/govcl/releases/download/v2.2.3/liblcl-2.2.3.zip"
+  LIBLCL_ARM64_URL: "https://gitee.com/energye/liblcl/releases/download/v2.2.5/liblcl.LinuxARM64GTK2.zip"
 
 jobs:
   build_deb_amd64:
@@ -27,6 +29,7 @@ jobs:
             lintian \
             curl \
             git \
+            unzip \
             ca-certificates
       - name: Install Go toolchain
         run: |
@@ -38,6 +41,20 @@ jobs:
           echo "/usr/local/go/bin" >> "$GITHUB_PATH"
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Download liblcl runtime
+        run: |
+          arch="$(dpkg --print-architecture)"
+          if [ "$arch" = "arm64" ]; then
+            url="${LIBLCL_ARM64_URL}"
+            member="liblcl.so"
+          else
+            url="${LIBLCL_AMD64_URL}"
+            member="linux64-gtk2/liblcl.so"
+          fi
+          curl -fsSL -o /tmp/liblcl.zip "$url"
+          unzip -j -o /tmp/liblcl.zip "$member" -d .
+          rm -f /tmp/liblcl.zip
+          test -s liblcl.so
       - name: Build deb package
         run: |
           go version
@@ -69,6 +86,7 @@ jobs:
             lintian \
             curl \
             git \
+            unzip \
             ca-certificates
       - name: Install Go toolchain
         run: |
@@ -80,6 +98,20 @@ jobs:
           echo "/usr/local/go/bin" >> "$GITHUB_PATH"
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Download liblcl runtime
+        run: |
+          arch="$(dpkg --print-architecture)"
+          if [ "$arch" = "arm64" ]; then
+            url="${LIBLCL_ARM64_URL}"
+            member="liblcl.so"
+          else
+            url="${LIBLCL_AMD64_URL}"
+            member="linux64-gtk2/liblcl.so"
+          fi
+          curl -fsSL -o /tmp/liblcl.zip "$url"
+          unzip -j -o /tmp/liblcl.zip "$member" -d .
+          rm -f /tmp/liblcl.zip
+          test -s liblcl.so
       - name: Build deb package
         run: |
           go version
@@ -110,6 +142,7 @@ jobs:
             lintian \
             curl \
             git \
+            unzip \
             ca-certificates
       - name: Install Go toolchain
         run: |
@@ -121,6 +154,20 @@ jobs:
           echo "/usr/local/go/bin" >> "$GITHUB_PATH"
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Download liblcl runtime
+        run: |
+          arch="$(dpkg --print-architecture)"
+          if [ "$arch" = "arm64" ]; then
+            url="${LIBLCL_ARM64_URL}"
+            member="liblcl.so"
+          else
+            url="${LIBLCL_AMD64_URL}"
+            member="linux64-gtk2/liblcl.so"
+          fi
+          curl -fsSL -o /tmp/liblcl.zip "$url"
+          unzip -j -o /tmp/liblcl.zip "$member" -d .
+          rm -f /tmp/liblcl.zip
+          test -s liblcl.so
       - name: Build deb package
         run: |
           go version

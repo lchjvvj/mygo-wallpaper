@@ -2,6 +2,8 @@
 
 export GO111MODULE=on
 
+include /usr/share/dpkg/architecture.mk
+
 %:
 	dh $@
 
@@ -11,3 +13,21 @@ override_dh_auto_build:
 override_dh_dwz:
 
 override_dh_auto_install:
+
+override_dh_install:
+	dh_install
+	if [ -f liblcl.so ]; then \
+		install -D -m 0644 liblcl.so \
+			debian/mygo-wallpaper/usr/lib/$(DEB_HOST_MULTIARCH)/liblcl.so; \
+	else \
+		echo "WARNING: liblcl.so not found in source tree, GUI will not start at runtime"; \
+	fi
+
+override_dh_strip:
+	dh_strip -Xliblcl.so
+
+override_dh_makeshlibs:
+	dh_makeshlibs -Xliblcl.so
+
+override_dh_shlibdeps:
+	dh_shlibdeps -Xliblcl.so
