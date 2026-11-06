@@ -14,7 +14,7 @@ Depends:
  ${shlibs:Depends},
  ${misc:Depends},
  libglib2.0-bin,
- libgtk2.0-0t64 | libgtk2.0-0,
+ libgtk-3-0t64 | libgtk-3-0,
 Recommends:
  dbus-x11,
  fonts-noto-cjk,
