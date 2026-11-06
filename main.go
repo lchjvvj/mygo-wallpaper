@@ -267,7 +267,7 @@ func main() {
 	vcl.Application.Initialize()
 	vcl.Application.SetMainFormOnTaskBar(true)
 
-	mainForm := vcl.NewForm(nil)
+	mainForm := vcl.Application.CreateForm()
 	mainForm.SetCaption("MyGO跨平台壁纸工具｜Bing+私有库+MTphotos")
 	mainForm.SetWidth(620)
 	mainForm.SetHeight(520)
